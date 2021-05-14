@@ -4,10 +4,10 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:mysql://localhost:3306/pix_db?serverTimezone=UTC
+    url: ${DB_URL:`jdbc:mysql://localhost:3306/pix_db?serverTimezone=UTC`}
     driverClassName: com.mysql.cj.jdbc.Driver
-    username: myuser
-    password: 123456
+    username: ${DB_USER:myuser}
+    password: ${DB_PASSWORD:123456}
     schema-generate: CREATE_DROP
     dialect: MYSQL
 jpa.default.properties.hibernate.hbm2ddl.auto: update
