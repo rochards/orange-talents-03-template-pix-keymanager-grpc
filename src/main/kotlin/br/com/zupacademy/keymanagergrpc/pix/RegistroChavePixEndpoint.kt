@@ -52,13 +52,7 @@ class RegistroChavePixEndpoint(
             return
         }
 
-        val chave = if (request.tipoChave == RANDOM) UUID.randomUUID().toString() else request.chave
-        val chavePix = ChavePix(
-            request.erpClienteId,
-            chave,
-            TipoChave.valueOf(request.tipoChave.name),
-            TipoConta.valueOf(request.tipoConta.name)
-        )
+        val chavePix = request.toModel()
 
         try {
             repository.save(chavePix)
@@ -75,4 +69,13 @@ class RegistroChavePixEndpoint(
             .build())
         responseObserver.onCompleted()
     }
+}
+
+fun ChavePixRequest.toModel(): ChavePix {
+    return ChavePix(
+        erpClienteId = this.erpClienteId,
+        chave = if (this.tipoChave == RANDOM) UUID.randomUUID().toString() else this.chave,
+        tipoChave = TipoChave.valueOf(this.tipoChave.name),
+        tipoConta = TipoConta.valueOf(this.tipoConta.name)
+    )
 }
