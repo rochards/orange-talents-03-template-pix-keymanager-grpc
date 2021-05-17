@@ -1,10 +1,12 @@
 package br.com.zupacademy.keymanagergrpc.pix.registra
 
 import br.com.zupacademy.keymanagergrpc.pix.*
+import br.com.zupacademy.keymanagergrpc.pix.exceptionhandler.ExceptionHandler
 import io.grpc.stub.StreamObserver
 import javax.inject.Singleton
 
 @Singleton
+@ExceptionHandler
 class RegistraChavePixEndpoint(private val service: NovaChavePixService) : KeyManagerServiceGrpc
 .KeyManagerServiceImplBase() {
 

@@ -9,18 +9,20 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
+@ValidPixKey
 @Introspected
 data class NovaChavePix(
     @field:NotBlank
+    @field:ValidUUID
     val erpClienteId: String,
 
     @field:Size(max = 77)
     val chave: String,
 
-    @field:NotNull
+    @field:NotNull(message = "desconhecida")
     val tipoChave: TipoChave?,
 
-    @field:NotNull
+    @field:NotNull(message = "desconhecida")
     val tipoConta: TipoConta?
 ) {
 

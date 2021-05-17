@@ -18,13 +18,11 @@ class NovaChavePixService(
     fun registraChavePix(@Valid novaChave: NovaChavePix): ChavePix {
 
         if (repository.existsByChave(novaChave.chave))
-            throw ChavePixExistenteException("chave pix ${novaChave.chave} já cadastrada")
+            throw ChavePixExistenteException("chave pix '${novaChave.chave}' já cadastrada")
 
         val contaResponse = clienteErpItau.consultaConta(novaChave.erpClienteId, novaChave.tipoConta!!.name)
         if (contaResponse.status == HttpStatus.NOT_FOUND)
-            throw IllegalArgumentException("cliente não encontrado no Itau")
-
-        println(contaResponse.body())
+            throw IllegalArgumentException("cliente não encontrado no Itaú")
 
         val chave = novaChave.toModel()
         repository.save(chave)

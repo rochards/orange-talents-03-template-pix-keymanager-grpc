@@ -36,6 +36,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut.beanvalidation:micronaut-hibernate-validator") // necessário para validações adicionais
+    implementation("org.hibernate:hibernate-validator:6.1.6.Final") // necessário para validações adicionais
     implementation("io.micronaut:micronaut-http-client")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
