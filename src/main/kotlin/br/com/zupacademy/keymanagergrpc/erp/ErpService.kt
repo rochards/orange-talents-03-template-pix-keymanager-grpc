@@ -5,9 +5,9 @@ import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.client.annotation.Client
 
-@Client("http://localhost:9091/api/v1/clientes")
+@Client("\${erp-itau.url}")
 interface ErpService {
 
-    @Get("{clienteId}")
+    @Get("/api/v1/clientes/{clienteId}")
     fun consultaCliente(@PathVariable clienteId: String): HttpResponse<ClienteResponse>
 }
