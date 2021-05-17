@@ -34,7 +34,16 @@ class RegistroChavePixEndpoint(
             return
         }
 
-        val clienteResponse = erpService.consultaCliente(request.erpClienteId)
+        val clienteResponse = try {
+            erpService.consultaCliente(request.erpClienteId)
+        } catch (e: Exception) {
+            responseObserver.onError(Status.INTERNAL
+                .withDescription(e.localizedMessage)
+                .asRuntimeException())
+
+            return
+        }
+
         if (clienteResponse.status == HttpStatus.NOT_FOUND) {
             responseObserver.onError(Status.NOT_FOUND
                 .withDescription("'clienteId'  não encontrado")
