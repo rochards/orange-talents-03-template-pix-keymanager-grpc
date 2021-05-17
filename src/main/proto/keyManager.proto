@@ -7,7 +7,7 @@ option java_outer_classname = "KeyManagerServiceOuterClass";
 
 package br.com.zupacademy.keymanagergrpc.pix;
 
-message ChavePixRequest {
+message RegistraChavePixRequest {
   string erpClienteId = 1;
   string chave = 2;
   TipoChave tipoChave = 3;
@@ -27,10 +27,10 @@ message ChavePixRequest {
   }
 }
 
-message ChavePixResponse {
+message RegistraChavePixResponse {
   int64 id = 1;
 }
 
 service KeyManagerService {
-  rpc registraChavePix(ChavePixRequest) returns (ChavePixResponse) {}
+  rpc registraChavePix(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
 }
