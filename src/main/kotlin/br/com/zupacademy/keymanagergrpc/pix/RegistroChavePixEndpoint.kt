@@ -1,14 +1,19 @@
 package br.com.zupacademy.keymanagergrpc.pix
 
+import br.com.zupacademy.keymanagergrpc.erp.ErpService
 import br.com.zupacademy.keymanagergrpc.pix.ChavePixRequest.TipoChave.*
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
+import io.micronaut.http.HttpStatus
 import java.util.*
 import javax.inject.Singleton
 import javax.validation.ConstraintViolationException
 
 @Singleton
-class RegistroChavePixEndpoint(private val repository: ChavePixRepository) : KeyManagerServiceGrpc.KeyManagerServiceImplBase() {
+class RegistroChavePixEndpoint(
+    private val repository: ChavePixRepository,
+    private val erpService: ErpService
+) : KeyManagerServiceGrpc.KeyManagerServiceImplBase() {
 
     override fun registraChavePix(request: ChavePixRequest, responseObserver: StreamObserver<ChavePixResponse>) {
 
@@ -24,6 +29,15 @@ class RegistroChavePixEndpoint(private val repository: ChavePixRepository) : Key
         if (repository.existsByChave(request.chave)) {
             responseObserver.onError(Status.ALREADY_EXISTS
                 .withDescription("'chave' já cadastrada")
+                .asRuntimeException())
+
+            return
+        }
+
+        val clienteResponse = erpService.consultaCliente(request.erpClienteId)
+        if (clienteResponse.status == HttpStatus.NOT_FOUND) {
+            responseObserver.onError(Status.NOT_FOUND
+                .withDescription("'clienteId'  não encontrado")
                 .asRuntimeException())
 
             return
