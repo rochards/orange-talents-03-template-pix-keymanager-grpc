@@ -7,8 +7,8 @@ import javax.inject.Singleton
 
 @Singleton
 @ExceptionHandler
-class RegistraChavePixEndpoint(private val service: NovaChavePixService) : KeyManagerServiceGrpc
-.KeyManagerServiceImplBase() {
+class RegistraChavePixEndpoint(private val service: NovaChavePixService)
+    : KeyManagerServiceGrpc.KeyManagerServiceImplBase() {
 
     override fun registraChavePix(
         request: RegistraChavePixRequest,

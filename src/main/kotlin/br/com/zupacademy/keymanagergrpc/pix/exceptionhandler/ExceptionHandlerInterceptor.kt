@@ -20,7 +20,7 @@ class ExceptionHandlerInterceptor : MethodInterceptor<BindableService, Any?> {
 
     override fun intercept(context: MethodInvocationContext<BindableService, Any?>): Any? {
         try {
-            return context.proceed()
+            return context.proceed() // continue com a cadeia de chamada, se for lançada exceções, trate-as abaixo
         } catch (e: Exception) {
 
             logger.error("Exceção '${e.javaClass.name}' lançada enquanto processava: ${context.targetMethod}")
@@ -33,9 +33,23 @@ class ExceptionHandlerInterceptor : MethodInterceptor<BindableService, Any?> {
             }
 
             val responseObserver = context.parameterValues[1] as StreamObserver<*>
+            /*
+            * Esse context tem acesso aos dois parâmetros do nosso método registraChavePix definido na classe
+            * RegistraChavePix e podemos acessá-los como posições de um array
+            * */
             responseObserver.onError(statusError)
 
             return null
         }
     }
 }
+
+/*
+* - Pra criarmos um interceptor a classe deve implementar uma MethodInterceptor<TipoClasseASerInterceptada,
+* TipoDoRetorno>;
+* - @InterceptorBean(ExceptionHandler::class) -> está indicando qual anotação está associada a esse interceptor;
+* - @Singleton é opcional aqui, mas lembre-se que se vc removê-la uma nova instância dessa classe será criada para
+* injeção que pedirá um ExceptionHandlerInterceptor;
+* - BindableService -> Nossa classe RegistraChavePixEndpoint extends de KeyManagerServiceGrpc.KeyManagerServiceImplBase.
+* Essa classe implementa a interface BindableService, por isso passamos tal interface para o MethodInterceptor.
+* */
