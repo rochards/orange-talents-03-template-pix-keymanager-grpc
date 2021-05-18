@@ -27,7 +27,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /* Necessário desabilitar o control transacional, ou seja transactional = false, pois o gRPC Server executa em uma
-* thread separada, assim evitando problemas nos cenários de teste
+* thread separada e acaba não participando do controle transacional, evitando assim alguns problemas
 * */
 @MicronautTest(transactional = false)
 internal class RegistraChavePixEndpointTest {
