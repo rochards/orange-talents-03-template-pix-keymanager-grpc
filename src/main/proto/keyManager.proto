@@ -26,11 +26,26 @@ message RegistraChavePixRequest {
     CONTA_POUPANCA = 2;
   }
 }
-
 message RegistraChavePixResponse {
   int64 id = 1;
 }
 
+// renomear o serviço abaixo, pois está muito generalista
 service KeyManagerService {
   rpc registraChavePix(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
+}
+
+
+message RemoveChavePixRequest {
+  int64 chaveId = 1;
+  string erpClienteId = 2;
+}
+message RemoveChavePixResponse {
+  string erpClienteId = 1;
+  string chave = 2;
+}
+/* resolvi separar em diferentes serviços pq o gRPC começa a se perder nos serviços, ficava lançando erro de
+UNIMPLEMENTED Method*/
+service KeyManagerRemoveService {
+  rpc removeChavePix(RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
 }

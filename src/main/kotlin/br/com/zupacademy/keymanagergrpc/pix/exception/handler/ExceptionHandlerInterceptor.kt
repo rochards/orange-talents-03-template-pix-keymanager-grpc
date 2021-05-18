@@ -1,6 +1,7 @@
 package br.com.zupacademy.keymanagergrpc.pix.exception.handler
 
 import br.com.zupacademy.keymanagergrpc.pix.registra.ChavePixExistenteException
+import br.com.zupacademy.keymanagergrpc.pix.remove.ChavePixInexistenteException
 import io.grpc.BindableService
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
@@ -29,6 +30,7 @@ class ExceptionHandlerInterceptor : MethodInterceptor<BindableService, Any?> {
                 is IllegalArgumentException -> Status.INVALID_ARGUMENT.withDescription(e.message).asRuntimeException()
                 is ConstraintViolationException -> Status.INVALID_ARGUMENT.withDescription(e.message).asRuntimeException()
                 is ChavePixExistenteException -> Status.ALREADY_EXISTS.withDescription(e.message).asRuntimeException()
+                is ChavePixInexistenteException -> Status.NOT_FOUND.withDescription(e.message).asRuntimeException()
                 else -> Status.UNKNOWN.withDescription("algo inesperado aconteceu").asRuntimeException()
             }
 
