@@ -1,4 +1,4 @@
-package br.com.zupacademy.keymanagergrpc.pix.exceptionhandler
+package br.com.zupacademy.keymanagergrpc.pix.exception.handler
 
 import br.com.zupacademy.keymanagergrpc.pix.registra.ChavePixExistenteException
 import io.grpc.BindableService

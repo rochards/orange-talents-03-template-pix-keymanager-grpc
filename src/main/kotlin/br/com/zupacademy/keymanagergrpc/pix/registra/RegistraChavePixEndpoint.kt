@@ -1,7 +1,7 @@
 package br.com.zupacademy.keymanagergrpc.pix.registra
 
 import br.com.zupacademy.keymanagergrpc.pix.*
-import br.com.zupacademy.keymanagergrpc.pix.exceptionhandler.ExceptionHandler
+import br.com.zupacademy.keymanagergrpc.pix.exception.handler.ExceptionHandler
 import io.grpc.stub.StreamObserver
 import javax.inject.Singleton
 

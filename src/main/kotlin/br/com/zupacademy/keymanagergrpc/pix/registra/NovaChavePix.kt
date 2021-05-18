@@ -3,6 +3,8 @@ package br.com.zupacademy.keymanagergrpc.pix.registra
 import br.com.zupacademy.keymanagergrpc.pix.ChavePix
 import br.com.zupacademy.keymanagergrpc.pix.TipoChave
 import br.com.zupacademy.keymanagergrpc.pix.TipoConta
+import br.com.zupacademy.keymanagergrpc.pix.exception.validation.ValidPixKey
+import br.com.zupacademy.keymanagergrpc.pix.exception.validation.ValidUUID
 import io.micronaut.core.annotation.Introspected
 import java.util.*
 import javax.validation.constraints.NotBlank

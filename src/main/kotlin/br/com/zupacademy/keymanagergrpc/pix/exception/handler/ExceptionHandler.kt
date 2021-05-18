@@ -1,4 +1,4 @@
-package br.com.zupacademy.keymanagergrpc.pix.exceptionhandler
+package br.com.zupacademy.keymanagergrpc.pix.exception.handler
 
 import io.micronaut.aop.Around
 import kotlin.annotation.AnnotationRetention.*

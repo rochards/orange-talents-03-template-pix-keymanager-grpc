@@ -1,5 +1,6 @@
-package br.com.zupacademy.keymanagergrpc.pix.registra
+package br.com.zupacademy.keymanagergrpc.pix.exception.validation
 
+import br.com.zupacademy.keymanagergrpc.pix.registra.NovaChavePix
 import io.micronaut.core.annotation.AnnotationValue
 import io.micronaut.validation.validator.constraints.ConstraintValidator
 import io.micronaut.validation.validator.constraints.ConstraintValidatorContext

@@ -1,4 +1,4 @@
-package br.com.zupacademy.keymanagergrpc.pix.registra
+package br.com.zupacademy.keymanagergrpc.pix.exception.validation
 
 import javax.validation.Constraint
 import javax.validation.Payload
