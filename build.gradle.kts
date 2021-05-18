@@ -43,6 +43,7 @@ dependencies {
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("com.h2database:h2")
+    testImplementation("org.mockito:mockito-core")
 }
 
 
