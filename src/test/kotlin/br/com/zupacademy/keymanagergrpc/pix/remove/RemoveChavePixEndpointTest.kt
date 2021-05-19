@@ -8,6 +8,7 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -28,20 +29,25 @@ internal class RemoveChavePixEndpointTest {
     @Inject
     lateinit var grpcClient: KeyManagerRemoveServiceGrpc.KeyManagerRemoveServiceBlockingStub
 
-    lateinit var chavePix: ChavePix
+    private lateinit var chavePixExistente: ChavePix
     private val clienteId = UUID.randomUUID().toString()
 
     @BeforeEach
     fun setUp() {
-        chavePix = ChavePix(clienteId, "parker.aranha@gmail.com", TipoChave.EMAIL, TipoConta.CONTA_CORRENTE)
-        repository.save(chavePix)
+        chavePixExistente = ChavePix(clienteId, "parker.aranha@gmail.com", TipoChave.EMAIL, TipoConta.CONTA_CORRENTE)
+        repository.save(chavePixExistente)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        repository.deleteAll()
     }
 
     @Test
     fun `deve remover chave existente`() {
         val response = grpcClient.removeChavePix(
             RemoveChavePixRequest.newBuilder()
-                .setChaveId(chavePix.id!!)
+                .setChaveId(chavePixExistente.id!!)
                 .setErpClienteId(clienteId)
                 .build()
         )
@@ -53,13 +59,32 @@ internal class RemoveChavePixEndpointTest {
     }
 
     @Test
+    fun `não deve remover chave se ela for não existir`() {
+
+        val exception = assertThrows<StatusRuntimeException> {
+            grpcClient.removeChavePix(RemoveChavePixRequest.newBuilder()
+                .setChaveId(Long.MAX_VALUE)
+                .setErpClienteId(clienteId)
+                .build())
+        }
+
+        with(exception) {
+            assertEquals(Status.NOT_FOUND.code, this.status.code)
+            assertEquals(
+                "chave '${Long.MAX_VALUE}' não encontrada para o cliente '$clienteId'",
+                this.status.description
+            )
+        }
+    }
+
+    @Test
     fun `não deve remover chave se ela não pertencer ao cliente`() {
         val outroClienteId = UUID.randomUUID().toString()
 
         val exception = assertThrows<StatusRuntimeException> {
             grpcClient.removeChavePix(
                 RemoveChavePixRequest.newBuilder()
-                    .setChaveId(chavePix.id!!)
+                    .setChaveId(chavePixExistente.id!!)
                     .setErpClienteId(outroClienteId)
                     .build()
             )
@@ -68,7 +93,7 @@ internal class RemoveChavePixEndpointTest {
         with(exception) {
             assertEquals(Status.NOT_FOUND.code, this.status.code)
             assertEquals(
-                "chave '${chavePix.id}' não encontrada para o cliente '$outroClienteId'",
+                "chave '${chavePixExistente.id}' não encontrada para o cliente '$outroClienteId'",
                 this.status.description
             )
         }
