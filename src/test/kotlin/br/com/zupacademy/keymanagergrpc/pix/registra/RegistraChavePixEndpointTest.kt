@@ -39,7 +39,7 @@ internal class RegistraChavePixEndpointTest {
     lateinit var clienteErpItau: ClienteErpItau // está sendo mockado abaixo
 
     @Inject
-    lateinit var grpcClient: KeyManagerServiceGrpc.KeyManagerServiceBlockingStub
+    lateinit var grpcClient: KeyManagerRegistraServiceGrpc.KeyManagerRegistraServiceBlockingStub
 
     private val clienteId = UUID.randomUUID().toString()
     private val contaResponse = ContaResponse(
@@ -223,8 +223,8 @@ internal class RegistraChavePixEndpointTest {
         * */
         @Singleton
         fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel)
-                : KeyManagerServiceGrpc.KeyManagerServiceBlockingStub? {
-            return KeyManagerServiceGrpc.newBlockingStub(channel)
+                : KeyManagerRegistraServiceGrpc.KeyManagerRegistraServiceBlockingStub? {
+            return KeyManagerRegistraServiceGrpc.newBlockingStub(channel)
         }
         /* em @GrpcChannel("endereco:porta") vc deveria passar o endereço do servidor gRPC e a porta, porém a
         * anotação @MicronautTest levanta o servidor em uma porta aleatória, tornando assim praticamente impossível

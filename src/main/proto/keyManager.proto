@@ -31,7 +31,7 @@ message RegistraChavePixResponse {
 }
 
 // renomear o serviço abaixo, pois está muito generalista
-service KeyManagerService {
+service KeyManagerRegistraService {
   rpc registraChavePix(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
 }
 
