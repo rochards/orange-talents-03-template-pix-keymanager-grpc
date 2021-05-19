@@ -12,4 +12,10 @@ interface ClienteBcb {
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_XML)
     fun registraChavePix(@Body request: CreatePixKeyRequest): HttpResponse<CreatePixKeyResponse>
+
+    @Delete("/{key}")
+    @Produces(MediaType.APPLICATION_XML)
+    @Consumes(MediaType.APPLICATION_XML)
+    fun removeChavePix(@PathVariable key: String, @Body request: DeletePixKeyRequest)
+            : HttpResponse<DeletePixKeyResponse>
 }
