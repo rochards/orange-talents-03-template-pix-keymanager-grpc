@@ -1,9 +1,9 @@
 package br.com.zupacademy.keymanagergrpc.pix.registra
 
-import br.com.zupacademy.keymanagergrpc.erp.ClienteErpItau
-import br.com.zupacademy.keymanagergrpc.erp.ContaResponse
-import br.com.zupacademy.keymanagergrpc.erp.Instituicao
-import br.com.zupacademy.keymanagergrpc.erp.Titular
+import br.com.zupacademy.keymanagergrpc.integracao.erp.ClienteErpItau
+import br.com.zupacademy.keymanagergrpc.integracao.erp.ContaResponse
+import br.com.zupacademy.keymanagergrpc.integracao.erp.Instituicao
+import br.com.zupacademy.keymanagergrpc.integracao.erp.Titular
 import br.com.zupacademy.keymanagergrpc.pix.*
 import io.grpc.ManagedChannel
 import io.grpc.Status

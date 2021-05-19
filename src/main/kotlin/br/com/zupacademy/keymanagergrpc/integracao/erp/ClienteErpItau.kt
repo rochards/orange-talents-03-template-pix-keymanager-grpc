@@ -1,4 +1,4 @@
-package br.com.zupacademy.keymanagergrpc.erp
+package br.com.zupacademy.keymanagergrpc.integracao.erp
 
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Get

@@ -1,4 +1,4 @@
-package br.com.zupacademy.keymanagergrpc.erp
+package br.com.zupacademy.keymanagergrpc.integracao.erp
 
 data class ClienteResponse(
     val id: String,

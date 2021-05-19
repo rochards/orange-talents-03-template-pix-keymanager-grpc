@@ -1,6 +1,6 @@
 package br.com.zupacademy.keymanagergrpc.pix.registra
 
-import br.com.zupacademy.keymanagergrpc.erp.ClienteErpItau
+import br.com.zupacademy.keymanagergrpc.integracao.erp.ClienteErpItau
 import br.com.zupacademy.keymanagergrpc.pix.ChavePix
 import br.com.zupacademy.keymanagergrpc.pix.ChavePixRepository
 import io.micronaut.http.HttpStatus
