@@ -1,5 +1,9 @@
 package br.com.zupacademy.keymanagergrpc.pix.registra
 
+import br.com.zupacademy.keymanagergrpc.integracao.bcb.ClienteBcb
+import br.com.zupacademy.keymanagergrpc.integracao.bcb.CreatePixKeyRequest
+import br.com.zupacademy.keymanagergrpc.integracao.bcb.CreatePixKeyResponse
+import br.com.zupacademy.keymanagergrpc.integracao.bcb.common.*
 import br.com.zupacademy.keymanagergrpc.integracao.erp.ClienteErpItau
 import br.com.zupacademy.keymanagergrpc.integracao.erp.ContaResponse
 import br.com.zupacademy.keymanagergrpc.integracao.erp.Instituicao
@@ -22,6 +26,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -39,14 +44,12 @@ internal class RegistraChavePixEndpointTest {
     lateinit var clienteErpItau: ClienteErpItau // está sendo mockado abaixo
 
     @Inject
+    lateinit var clienteBcb: ClienteBcb
+
+    @Inject
     lateinit var grpcClient: KeyManagerRegistraServiceGrpc.KeyManagerRegistraServiceBlockingStub
 
     private val clienteId = UUID.randomUUID().toString()
-    private val contaResponse = ContaResponse(
-        "CONTA_CORRENTE",
-        Instituicao("ITAÚ UNIBANCO S.A.", "60701190"), "0001", "123455",
-        Titular(clienteId, "Peter Parker", "86135457004")
-    )
 
     @BeforeEach
     fun setUp() {
@@ -56,8 +59,18 @@ internal class RegistraChavePixEndpointTest {
     @Test
     @DisplayName("deve criar uma nova chave do tipo RANDOM")
     fun registraChavePixTeste01() {
+        val contaResponse = buildContaResponse()
+        val createPixKeyRequest = buildCreatePixKeyRequest(contaResponse)
+        val randomKey = UUID.randomUUID().toString();
+        val createPixKeyResponse = buildCreatePixKeyResponse(createPixKeyRequest).copy(key = randomKey)
+
+
         `when`(clienteErpItau.consultaConta(clienteId, contaResponse.tipo))
             .thenReturn(HttpResponse.ok(contaResponse))
+
+        `when`(clienteBcb.registraChavePix(createPixKeyRequest))
+            .thenReturn(HttpResponse.ok(createPixKeyResponse))
+
 
         val response = grpcClient.registraChavePix(
             RegistraChavePixRequest.newBuilder()
@@ -67,21 +80,34 @@ internal class RegistraChavePixEndpointTest {
                 .build()
         )
 
+
         assertNotNull(response.id)
         val chaveCriada = repository.findById(response.id).get()
         with(chaveCriada) {
             assertEquals(clienteId, this.erpClienteId)
-            assertNotNull(this.chave)
+            assertEquals(this.chave, randomKey)
             assertEquals(TipoChave.RANDOM, this.tipoChave)
             assertEquals(TipoConta.CONTA_CORRENTE, this.tipoConta)
+            assertNotNull(this.registradaNoBcbEm)
         }
     }
 
     @Test
     @DisplayName("deve criar uma nova chave do tipo CPF")
     fun registraChavePixTeste02() {
+        val contaResponse = buildContaResponse()
+        val createPixKeyRequest = buildCreatePixKeyRequest(contaResponse).copy(
+            key = contaResponse.titular.cpf, keyType = KeyType.CPF
+        )
+        val createPixKeyResponse = buildCreatePixKeyResponse(createPixKeyRequest)
+
+
         `when`(clienteErpItau.consultaConta(clienteId, contaResponse.tipo))
             .thenReturn(HttpResponse.ok(contaResponse))
+
+        `when`(clienteBcb.registraChavePix(createPixKeyRequest))
+            .thenReturn(HttpResponse.ok(createPixKeyResponse))
+
 
         val response = grpcClient.registraChavePix(
             RegistraChavePixRequest.newBuilder()
@@ -92,6 +118,7 @@ internal class RegistraChavePixEndpointTest {
                 .build()
         )
 
+
         assertNotNull(response.id)
         val chaveCriada = repository.findById(response.id).get()
         with(chaveCriada) {
@@ -99,63 +126,99 @@ internal class RegistraChavePixEndpointTest {
             assertEquals(contaResponse.titular.cpf, this.chave)
             assertEquals(TipoChave.CPF, this.tipoChave)
             assertEquals(TipoConta.CONTA_CORRENTE, this.tipoConta)
+            assertNotNull(this.registradaNoBcbEm)
         }
     }
 
     @Test
     @DisplayName("deve criar uma nova chave do tipo TELEFONE_CELULAR")
     fun registraChavePixTeste03() {
+        val contaResponse = buildContaResponse()
+        val telefone = "+5534996637441"
+        val createPixKeyRequest = buildCreatePixKeyRequest(contaResponse).copy(key = telefone, keyType = KeyType.PHONE)
+        val createPixKeyResponse = buildCreatePixKeyResponse(createPixKeyRequest)
+
+
         `when`(clienteErpItau.consultaConta(clienteId, contaResponse.tipo))
             .thenReturn(HttpResponse.ok(contaResponse))
+
+        `when`(clienteBcb.registraChavePix(createPixKeyRequest))
+            .thenReturn(HttpResponse.ok(createPixKeyResponse))
+
 
         val response = grpcClient.registraChavePix(
             RegistraChavePixRequest.newBuilder()
                 .setErpClienteId(clienteId)
-                .setChave("+5534996637441")
+                .setChave(telefone)
                 .setTipoChave(RegistraChavePixRequest.TipoChave.TELEFONE_CELULAR)
                 .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
                 .build()
         )
 
+
         assertNotNull(response.id)
         val chaveCriada = repository.findById(response.id).get()
         with(chaveCriada) {
-            assertEquals( clienteId, this.erpClienteId)
-            assertEquals("+5534996637441", this.chave)
+            assertEquals(clienteId, this.erpClienteId)
+            assertEquals(telefone, this.chave)
             assertEquals(TipoChave.TELEFONE_CELULAR, this.tipoChave)
             assertEquals(TipoConta.CONTA_CORRENTE, this.tipoConta)
+            assertNotNull(this.registradaNoBcbEm)
         }
     }
 
     @Test
     @DisplayName("deve criar uma nova chave do tipo EMAIL")
     fun registraChavePixTeste04() {
+        val contaResponse = buildContaResponse()
+        val email = "parker.aranha@gmail.com"
+        val createPixKeyRequest = buildCreatePixKeyRequest(contaResponse).copy(key = email, keyType = KeyType.EMAIL)
+        val createPixKeyResponse = buildCreatePixKeyResponse(createPixKeyRequest)
+
+
         `when`(clienteErpItau.consultaConta(clienteId, contaResponse.tipo))
             .thenReturn(HttpResponse.ok(contaResponse))
+
+        `when`(clienteBcb.registraChavePix(createPixKeyRequest))
+            .thenReturn(HttpResponse.ok(createPixKeyResponse))
+
 
         val response = grpcClient.registraChavePix(
             RegistraChavePixRequest.newBuilder()
                 .setErpClienteId(clienteId)
-                .setChave("parker.aranha@gmail.com")
+                .setChave(email)
                 .setTipoChave(RegistraChavePixRequest.TipoChave.EMAIL)
                 .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
                 .build()
         )
 
+
         assertNotNull(response.id)
         val chaveCriada = repository.findById(response.id).get()
         with(chaveCriada) {
             assertEquals(clienteId, this.erpClienteId)
-            assertEquals("parker.aranha@gmail.com", this.chave)
+            assertEquals(email, this.chave)
             assertEquals(TipoChave.EMAIL, this.tipoChave)
             assertEquals(TipoConta.CONTA_CORRENTE, this.tipoConta)
+            assertNotNull(this.registradaNoBcbEm)
         }
     }
 
     @Test
     @DisplayName("não deve criar chave duplicada")
     fun registraChavePixTeste05() {
-        repository.save(ChavePix(clienteId, contaResponse.titular.cpf, TipoChave.CPF, TipoConta.CONTA_CORRENTE))
+        val contaResponse = buildContaResponse()
+
+        repository.save(
+            ChavePix(
+                clienteId,
+                contaResponse.titular.cpf,
+                TipoChave.CPF,
+                TipoConta.CONTA_CORRENTE,
+                LocalDateTime.now()
+            )
+        )
+
 
         val exception = assertThrows<StatusRuntimeException> {
             grpcClient.registraChavePix(
@@ -164,20 +227,25 @@ internal class RegistraChavePixEndpointTest {
                     .setChave(contaResponse.titular.cpf)
                     .setTipoChave(RegistraChavePixRequest.TipoChave.CPF)
                     .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
-                    .build())
+                    .build()
+            )
         }
+
 
         with(exception) {
             assertEquals(Status.ALREADY_EXISTS.code, this.status.code)
-            assertEquals("chave pix '${contaResponse.titular.cpf}' já cadastrada", this.status.description,)
+            assertEquals("chave pix '${contaResponse.titular.cpf}' já cadastrada", this.status.description)
         }
     }
 
     @Test
     @DisplayName("não deve criar chave quando o cliente não for encontrado no Itaú")
     fun registraChavePixTeste06() {
+        val contaResponse = buildContaResponse()
+
         `when`(clienteErpItau.consultaConta(clienteId, contaResponse.tipo))
             .thenReturn(HttpResponse.notFound())
+
 
         val exception = assertThrows<StatusRuntimeException> {
             grpcClient.registraChavePix(
@@ -186,8 +254,10 @@ internal class RegistraChavePixEndpointTest {
                     .setChave(contaResponse.titular.cpf)
                     .setTipoChave(RegistraChavePixRequest.TipoChave.CPF)
                     .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
-                    .build())
+                    .build()
+            )
         }
+
 
         with(exception) {
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
@@ -201,18 +271,65 @@ internal class RegistraChavePixEndpointTest {
         val exception = assertThrows<StatusRuntimeException> {
             grpcClient.registraChavePix(
                 RegistraChavePixRequest.newBuilder()
-                    .build())
+                    .build()
+            )
         }
+
 
         with(exception) {
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
         }
     }
 
+    private fun buildContaResponse(): ContaResponse {
+        return ContaResponse(
+            tipo = "CONTA_CORRENTE",
+            instituicao = Instituicao("ITAÚ UNIBANCO S.A.", "60701190"),
+            agencia = "0001",
+            numero = "123455",
+            titular = Titular(clienteId, "Peter Parker", "86135457004")
+        )
+    }
+
+    private fun buildCreatePixKeyRequest(conta: ContaResponse): CreatePixKeyRequest {
+        return CreatePixKeyRequest(
+            keyType = KeyType.RANDOM,
+            key = "",
+            bankAccount = BankAccount(
+                participant = conta.instituicao.ispb,
+                branch = conta.agencia,
+                accountNumber = conta.numero,
+                accountType = when (conta.tipo) {
+                    "CONTA_CORRENTE" -> AccountType.CACC
+                    else -> AccountType.CVGS
+                }
+            ),
+            owner = Owner(
+                type = OwnerType.NATURAL_PERSON,
+                name = conta.titular.nome,
+                taxIdNumber = conta.titular.cpf
+            ),
+        )
+    }
+
+    private fun buildCreatePixKeyResponse(createPixKeyRequest: CreatePixKeyRequest): CreatePixKeyResponse {
+        return CreatePixKeyResponse(
+            keyType = createPixKeyRequest.keyType,
+            key = createPixKeyRequest.key,
+            bankAccount = createPixKeyRequest.bankAccount.copy(),
+            owner = createPixKeyRequest.owner.copy(),
+            createdAt = LocalDateTime.now()
+        )
+    }
 
     @MockBean(ClienteErpItau::class)
     fun clienteItau(): ClienteErpItau {
         return mock(ClienteErpItau::class.java)
+    }
+
+    @MockBean(ClienteBcb::class)
+    fun clienteBcb(): ClienteBcb {
+        return mock(ClienteBcb::class.java)
     }
 
     @Factory

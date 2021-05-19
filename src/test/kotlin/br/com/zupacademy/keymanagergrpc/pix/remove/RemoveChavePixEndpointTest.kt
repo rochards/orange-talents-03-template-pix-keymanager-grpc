@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,7 +35,9 @@ internal class RemoveChavePixEndpointTest {
 
     @BeforeEach
     fun setUp() {
-        chavePixExistente = ChavePix(clienteId, "parker.aranha@gmail.com", TipoChave.EMAIL, TipoConta.CONTA_CORRENTE)
+        chavePixExistente = ChavePix(
+            clienteId, "parker.aranha@gmail.com", TipoChave.EMAIL, TipoConta.CONTA_CORRENTE, LocalDateTime.now()
+        )
         repository.save(chavePixExistente)
     }
 
@@ -62,10 +65,12 @@ internal class RemoveChavePixEndpointTest {
     fun `não deve remover chave se ela for não existir`() {
 
         val exception = assertThrows<StatusRuntimeException> {
-            grpcClient.removeChavePix(RemoveChavePixRequest.newBuilder()
-                .setChaveId(Long.MAX_VALUE)
-                .setErpClienteId(clienteId)
-                .build())
+            grpcClient.removeChavePix(
+                RemoveChavePixRequest.newBuilder()
+                    .setChaveId(Long.MAX_VALUE)
+                    .setErpClienteId(clienteId)
+                    .build()
+            )
         }
 
         with(exception) {

@@ -18,4 +18,5 @@ datasources:
     dialect: MYSQL
 jpa.default.properties.hibernate.hbm2ddl.auto: update
 
-erp-itau.url: 'http://localhost:9091'
+erp-itau.url: ${ERP_ITAU_URL:`http://localhost:9091`}
+bcb.url: ${BCB_URL:`http://localhost:8082`}

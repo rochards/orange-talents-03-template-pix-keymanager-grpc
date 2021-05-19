@@ -39,6 +39,7 @@ dependencies {
     implementation("io.micronaut.beanvalidation:micronaut-hibernate-validator") // necessário para validações adicionais
     implementation("org.hibernate:hibernate-validator:6.1.6.Final") // necessário para validações adicionais
     implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut.xml:micronaut-jackson-xml") // necessária para serializar xml
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("mysql:mysql-connector-java")

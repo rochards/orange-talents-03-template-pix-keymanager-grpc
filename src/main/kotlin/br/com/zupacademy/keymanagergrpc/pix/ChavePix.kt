@@ -1,5 +1,6 @@
 package br.com.zupacademy.keymanagergrpc.pix
 
+import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
@@ -23,7 +24,11 @@ class ChavePix(
     @field:NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val tipoConta: TipoConta
+    val tipoConta: TipoConta,
+
+    @field:NotNull
+    @Column(nullable = false, updatable = false)
+    val registradaNoBcbEm: LocalDateTime
 ) {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
