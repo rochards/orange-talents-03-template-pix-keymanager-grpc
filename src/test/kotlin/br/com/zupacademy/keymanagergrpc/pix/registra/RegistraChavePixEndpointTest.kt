@@ -294,7 +294,7 @@ internal class RegistraChavePixEndpointTest {
 
         `when`(clienteBcb.registraChavePix(createPixKeyRequest))
 //            .thenReturn(HttpResponse.unprocessableEntity())
-            .thenThrow(HttpClientResponseException(anyString(), HttpResponse.unprocessableEntity<Any>()))
+            .thenThrow(HttpClientResponseException("", HttpResponse.unprocessableEntity<Any>()))
 
 
         val exception = assertThrows<StatusRuntimeException> {
