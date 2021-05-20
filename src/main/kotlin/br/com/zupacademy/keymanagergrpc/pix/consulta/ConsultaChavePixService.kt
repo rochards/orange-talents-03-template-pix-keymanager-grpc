@@ -1,12 +1,14 @@
 package br.com.zupacademy.keymanagergrpc.pix.consulta
 
+import br.com.zupacademy.keymanagergrpc.grpc.ConsultaChavePixResponse
+import br.com.zupacademy.keymanagergrpc.grpc.TipoChave
+import br.com.zupacademy.keymanagergrpc.grpc.TipoConta
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.ClienteBcb
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.Instituicoes
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.PixKeyDetailsResponse
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.common.AccountType
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.common.KeyType
 import br.com.zupacademy.keymanagergrpc.pix.ChavePixRepository
-import br.com.zupacademy.keymanagergrpc.pix.ConsultaChavePixResponse
 import br.com.zupacademy.keymanagergrpc.pix.exception.validation.ValidUUID
 import br.com.zupacademy.keymanagergrpc.pix.remove.ChavePixInexistenteException
 import com.google.protobuf.Timestamp
@@ -56,11 +58,11 @@ fun PixKeyDetailsResponse.toDTO(
         .setErpClienteId(erpClienteId)
         .setTipoChave(
             when (this.keyType) {
-                KeyType.RANDOM -> ConsultaChavePixResponse.TipoChave.RANDOM
-                KeyType.CPF -> ConsultaChavePixResponse.TipoChave.CPF
-                KeyType.EMAIL -> ConsultaChavePixResponse.TipoChave.EMAIL
-                KeyType.PHONE -> ConsultaChavePixResponse.TipoChave.TELEFONE_CELULAR
-                else -> ConsultaChavePixResponse.TipoChave.UNKNOWN_CHAVE
+                KeyType.RANDOM -> TipoChave.RANDOM
+                KeyType.CPF -> TipoChave.CPF
+                KeyType.EMAIL -> TipoChave.EMAIL
+                KeyType.PHONE -> TipoChave.TELEFONE_CELULAR
+                else -> TipoChave.UNKNOWN_CHAVE
             }
         )
         .setChave(this.key)
@@ -77,8 +79,8 @@ fun PixKeyDetailsResponse.toDTO(
                 .setNumero(this.bankAccount.accountNumber)
                 .setTipoConta(
                     when (this.bankAccount.accountType) {
-                        AccountType.CACC -> ConsultaChavePixResponse.TipoConta.CONTA_CORRENTE
-                        AccountType.CVGS -> ConsultaChavePixResponse.TipoConta.CONTA_POUPANCA
+                        AccountType.CACC -> TipoConta.CONTA_CORRENTE
+                        AccountType.CVGS -> TipoConta.CONTA_POUPANCA
                     }
                 )
                 .build()

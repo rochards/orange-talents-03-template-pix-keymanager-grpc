@@ -1,8 +1,8 @@
 package br.com.zupacademy.keymanagergrpc.pix.remove
 
-import br.com.zupacademy.keymanagergrpc.pix.KeyManagerRemoveServiceGrpc
-import br.com.zupacademy.keymanagergrpc.pix.RemoveChavePixRequest
-import br.com.zupacademy.keymanagergrpc.pix.RemoveChavePixResponse
+import br.com.zupacademy.keymanagergrpc.grpc.KeyManagerRemoveServiceGrpc
+import br.com.zupacademy.keymanagergrpc.grpc.RemoveChavePixRequest
+import br.com.zupacademy.keymanagergrpc.grpc.RemoveChavePixResponse
 import br.com.zupacademy.keymanagergrpc.pix.exception.handler.ExceptionHandler
 import io.grpc.stub.StreamObserver
 import javax.inject.Singleton

@@ -1,5 +1,10 @@
 package br.com.zupacademy.keymanagergrpc.pix.registra
 
+import br.com.zupacademy.keymanagergrpc.grpc.KeyManagerRegistraServiceGrpc
+import br.com.zupacademy.keymanagergrpc.grpc.RegistraChavePixRequest
+import br.com.zupacademy.keymanagergrpc.grpc.RegistraChavePixResponse
+import br.com.zupacademy.keymanagergrpc.grpc.TipoChave.UNKNOWN_CHAVE
+import br.com.zupacademy.keymanagergrpc.grpc.TipoConta.UNKNOWN_CONTA
 import br.com.zupacademy.keymanagergrpc.pix.*
 import br.com.zupacademy.keymanagergrpc.pix.exception.handler.ExceptionHandler
 import io.grpc.stub.StreamObserver
@@ -30,11 +35,11 @@ fun RegistraChavePixRequest.toModel(): NovaChavePix {
         erpClienteId = this.erpClienteId,
         chave = this.chave,
         tipoChave = when (this.tipoChave) {
-            RegistraChavePixRequest.TipoChave.UNKNOWN_CHAVE -> null
+            UNKNOWN_CHAVE -> null
             else -> TipoChave.valueOf(this.tipoChave.name)
         },
         tipoConta = when (this.tipoConta) {
-            RegistraChavePixRequest.TipoConta.UNKNOWN_CONTA -> null
+            UNKNOWN_CONTA -> null
             else -> TipoConta.valueOf(this.tipoConta.name)
         }
     )

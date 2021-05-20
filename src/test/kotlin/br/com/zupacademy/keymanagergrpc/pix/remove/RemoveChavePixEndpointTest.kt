@@ -1,5 +1,7 @@
 package br.com.zupacademy.keymanagergrpc.pix.remove
 
+import br.com.zupacademy.keymanagergrpc.grpc.KeyManagerRemoveServiceGrpc
+import br.com.zupacademy.keymanagergrpc.grpc.RemoveChavePixRequest
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.ClienteBcb
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.DeletePixKeyRequest
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.DeletePixKeyResponse

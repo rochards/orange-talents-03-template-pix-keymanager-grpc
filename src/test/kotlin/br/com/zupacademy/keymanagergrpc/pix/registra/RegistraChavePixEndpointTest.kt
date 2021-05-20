@@ -1,5 +1,9 @@
 package br.com.zupacademy.keymanagergrpc.pix.registra
 
+import br.com.zupacademy.keymanagergrpc.grpc.KeyManagerRegistraServiceGrpc
+import br.com.zupacademy.keymanagergrpc.grpc.RegistraChavePixRequest
+import br.com.zupacademy.keymanagergrpc.grpc.TipoChave.*
+import br.com.zupacademy.keymanagergrpc.grpc.TipoConta.CONTA_CORRENTE
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.ClienteBcb
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.CreatePixKeyRequest
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.CreatePixKeyResponse
@@ -75,8 +79,8 @@ internal class RegistraChavePixEndpointTest {
         val response = grpcClient.registraChavePix(
             RegistraChavePixRequest.newBuilder()
                 .setErpClienteId(clienteId)
-                .setTipoChave(RegistraChavePixRequest.TipoChave.RANDOM)
-                .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
+                .setTipoChave(RANDOM)
+                .setTipoConta(CONTA_CORRENTE)
                 .build()
         )
 
@@ -113,8 +117,8 @@ internal class RegistraChavePixEndpointTest {
             RegistraChavePixRequest.newBuilder()
                 .setErpClienteId(clienteId)
                 .setChave(contaResponse.titular.cpf)
-                .setTipoChave(RegistraChavePixRequest.TipoChave.CPF)
-                .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
+                .setTipoChave(CPF)
+                .setTipoConta(CONTA_CORRENTE)
                 .build()
         )
 
@@ -150,8 +154,8 @@ internal class RegistraChavePixEndpointTest {
             RegistraChavePixRequest.newBuilder()
                 .setErpClienteId(clienteId)
                 .setChave(telefone)
-                .setTipoChave(RegistraChavePixRequest.TipoChave.TELEFONE_CELULAR)
-                .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
+                .setTipoChave(TELEFONE_CELULAR)
+                .setTipoConta(CONTA_CORRENTE)
                 .build()
         )
 
@@ -187,8 +191,8 @@ internal class RegistraChavePixEndpointTest {
             RegistraChavePixRequest.newBuilder()
                 .setErpClienteId(clienteId)
                 .setChave(email)
-                .setTipoChave(RegistraChavePixRequest.TipoChave.EMAIL)
-                .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
+                .setTipoChave(EMAIL)
+                .setTipoConta(CONTA_CORRENTE)
                 .build()
         )
 
@@ -225,8 +229,8 @@ internal class RegistraChavePixEndpointTest {
                 RegistraChavePixRequest.newBuilder()
                     .setErpClienteId(clienteId)
                     .setChave(contaResponse.titular.cpf)
-                    .setTipoChave(RegistraChavePixRequest.TipoChave.CPF)
-                    .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
+                    .setTipoChave(CPF)
+                    .setTipoConta(CONTA_CORRENTE)
                     .build()
             )
         }
@@ -252,8 +256,8 @@ internal class RegistraChavePixEndpointTest {
                 RegistraChavePixRequest.newBuilder()
                     .setErpClienteId(clienteId)
                     .setChave(contaResponse.titular.cpf)
-                    .setTipoChave(RegistraChavePixRequest.TipoChave.CPF)
-                    .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
+                    .setTipoChave(CPF)
+                    .setTipoConta(CONTA_CORRENTE)
                     .build()
             )
         }
@@ -302,8 +306,8 @@ internal class RegistraChavePixEndpointTest {
                 RegistraChavePixRequest.newBuilder()
                     .setErpClienteId(clienteId)
                     .setChave(contaResponse.titular.cpf)
-                    .setTipoChave(RegistraChavePixRequest.TipoChave.CPF)
-                    .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
+                    .setTipoChave(CPF)
+                    .setTipoConta(CONTA_CORRENTE)
                     .build()
             )
         }

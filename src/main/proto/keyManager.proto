@@ -1,32 +1,32 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "br.com.zupacademy.keymanagergrpc.pix";
+option java_package = "br.com.zupacademy.keymanagergrpc.grpc";
 option java_outer_classname = "KeyManagerServiceOuterClass";
 //option objc_class_prefix = "HLW";
 
-package br.com.zupacademy.keymanagergrpc.pix;
+package br.com.zupacademy.keymanagergrpc.grpc;
 
 import "google/protobuf/timestamp.proto";
+
+enum TipoChave {
+  UNKNOWN_CHAVE = 0;
+  RANDOM = 1;
+  CPF = 2;
+  TELEFONE_CELULAR = 3;
+  EMAIL = 4;
+}
+enum TipoConta {
+  UNKNOWN_CONTA = 0;
+  CONTA_CORRENTE = 1;
+  CONTA_POUPANCA = 2;
+}
 
 message RegistraChavePixRequest {
   string erpClienteId = 1;
   string chave = 2;
   TipoChave tipoChave = 3;
   TipoConta tipoConta = 4;
-
-  enum TipoChave {
-    UNKNOWN_CHAVE = 0;
-    RANDOM = 1;
-    CPF = 2;
-    TELEFONE_CELULAR = 3;
-    EMAIL = 4;
-  }
-  enum TipoConta {
-    UNKNOWN_CONTA = 0;
-    CONTA_CORRENTE = 1;
-    CONTA_POUPANCA = 2;
-  }
 }
 message RegistraChavePixResponse {
   int64 id = 1;
@@ -80,18 +80,6 @@ message ConsultaChavePixResponse {
     string agencia = 2;
     string numero = 3;
     TipoConta tipoConta = 4;
-  }
-  enum TipoChave {
-    UNKNOWN_CHAVE = 0;
-    RANDOM = 1;
-    CPF = 2;
-    TELEFONE_CELULAR = 3;
-    EMAIL = 4;
-  }
-  enum TipoConta {
-    UNKNOWN_CONTA = 0;
-    CONTA_CORRENTE = 1;
-    CONTA_POUPANCA = 2;
   }
 }
 service KeyManagerConsultaService {

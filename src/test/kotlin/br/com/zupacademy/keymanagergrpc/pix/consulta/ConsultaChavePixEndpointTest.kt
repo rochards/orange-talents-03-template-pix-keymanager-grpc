@@ -1,5 +1,9 @@
 package br.com.zupacademy.keymanagergrpc.pix.consulta
 
+import br.com.zupacademy.keymanagergrpc.grpc.ConsultaChavePixRequest
+import br.com.zupacademy.keymanagergrpc.grpc.KeyManagerConsultaServiceGrpc
+import br.com.zupacademy.keymanagergrpc.grpc.TipoChave.EMAIL
+import br.com.zupacademy.keymanagergrpc.grpc.TipoConta.CONTA_CORRENTE
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.ClienteBcb
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.PixKeyDetailsResponse
 import br.com.zupacademy.keymanagergrpc.integracao.bcb.common.*
@@ -78,14 +82,14 @@ internal class ConsultaChavePixEndpointTest {
         with(response) {
             assertEquals(chavePixExistente.id.toString(), this.chaveId)
             assertEquals(clienteId, this.erpClienteId)
-            assertEquals(ConsultaChavePixResponse.TipoChave.EMAIL, this.tipoChave)
+            assertEquals(EMAIL, this.tipoChave)
             assertEquals("parker.aranha@gmail.com", this.chave)
             assertEquals(pixKeyDetailsResponse.owner.name, this.titular.nome)
             assertEquals(pixKeyDetailsResponse.owner.taxIdNumber, this.titular.cpf)
             assertEquals("ITAÚ UNIBANCO S.A.", this.conta.nomeInstituicao)
             assertEquals(pixKeyDetailsResponse.bankAccount.branch, this.conta.agencia)
             assertEquals(pixKeyDetailsResponse.bankAccount.accountNumber, this.conta.numero)
-            assertEquals(ConsultaChavePixResponse.TipoConta.CONTA_CORRENTE, this.conta.tipoConta)
+            assertEquals(CONTA_CORRENTE, this.conta.tipoConta)
         }
     }
 
@@ -107,14 +111,14 @@ internal class ConsultaChavePixEndpointTest {
         with(response) {
             assertTrue(this.chaveId.isBlank())
             assertTrue(this.erpClienteId.isBlank())
-            assertEquals(ConsultaChavePixResponse.TipoChave.EMAIL, this.tipoChave)
+            assertEquals(EMAIL, this.tipoChave)
             assertEquals("parker.aranha@gmail.com", this.chave)
             assertEquals(pixKeyDetailsResponse.owner.name, this.titular.nome)
             assertEquals(pixKeyDetailsResponse.owner.taxIdNumber, this.titular.cpf)
             assertEquals("ITAÚ UNIBANCO S.A.", this.conta.nomeInstituicao)
             assertEquals(pixKeyDetailsResponse.bankAccount.branch, this.conta.agencia)
             assertEquals(pixKeyDetailsResponse.bankAccount.accountNumber, this.conta.numero)
-            assertEquals(ConsultaChavePixResponse.TipoConta.CONTA_CORRENTE, this.conta.tipoConta)
+            assertEquals(CONTA_CORRENTE, this.conta.tipoConta)
         }
     }
 

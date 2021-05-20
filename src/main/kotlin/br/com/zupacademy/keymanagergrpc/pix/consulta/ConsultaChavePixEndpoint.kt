@@ -1,8 +1,8 @@
 package br.com.zupacademy.keymanagergrpc.pix.consulta
 
-import br.com.zupacademy.keymanagergrpc.pix.ConsultaChavePixRequest
-import br.com.zupacademy.keymanagergrpc.pix.ConsultaChavePixResponse
-import br.com.zupacademy.keymanagergrpc.pix.KeyManagerConsultaServiceGrpc
+import br.com.zupacademy.keymanagergrpc.grpc.ConsultaChavePixRequest
+import br.com.zupacademy.keymanagergrpc.grpc.ConsultaChavePixResponse
+import br.com.zupacademy.keymanagergrpc.grpc.KeyManagerConsultaServiceGrpc
 import br.com.zupacademy.keymanagergrpc.pix.exception.handler.ExceptionHandler
 import io.grpc.stub.StreamObserver
 import javax.inject.Singleton
