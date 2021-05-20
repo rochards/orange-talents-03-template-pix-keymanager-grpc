@@ -7,6 +7,8 @@ option java_outer_classname = "KeyManagerServiceOuterClass";
 
 package br.com.zupacademy.keymanagergrpc.pix;
 
+import "google/protobuf/timestamp.proto";
+
 message RegistraChavePixRequest {
   string erpClienteId = 1;
   string chave = 2;
@@ -48,4 +50,50 @@ message RemoveChavePixResponse {
 UNIMPLEMENTED Method*/
 service KeyManagerRemoveService {
   rpc removeChavePix(RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
+}
+
+
+message ConsultaChavePixRequest {
+  ChavePix chavePix = 1;
+  string chave = 2;
+
+  message ChavePix {
+    int64 id = 1;
+    string erpClienteId = 2;
+  }
+}
+message ConsultaChavePixResponse {
+  string chaveId = 1;
+  string erpClienteId = 2;
+  TipoChave tipoChave = 3;
+  string chave = 4;
+  Titular titular = 5;
+  Conta conta = 6;
+  google.protobuf.Timestamp criadaEm = 7;
+
+  message Titular {
+    string nome = 1;
+    string cpf = 2;
+  }
+  message Conta {
+    string nomeInstituicao = 1;
+    string agencia = 2;
+    string numero = 3;
+    TipoConta tipoConta = 4;
+  }
+  enum TipoChave {
+    UNKNOWN_CHAVE = 0;
+    RANDOM = 1;
+    CPF = 2;
+    TELEFONE_CELULAR = 3;
+    EMAIL = 4;
+  }
+  enum TipoConta {
+    UNKNOWN_CONTA = 0;
+    CONTA_CORRENTE = 1;
+    CONTA_POUPANCA = 2;
+  }
+}
+service KeyManagerConsultaService {
+  rpc consultaChavePix(ConsultaChavePixRequest) returns (ConsultaChavePixResponse) {}
 }
