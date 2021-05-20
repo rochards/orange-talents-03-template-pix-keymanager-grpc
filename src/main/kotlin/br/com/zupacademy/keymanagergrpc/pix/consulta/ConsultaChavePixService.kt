@@ -79,7 +79,6 @@ fun PixKeyDetailsResponse.toDTO(
                     when (this.bankAccount.accountType) {
                         AccountType.CACC -> ConsultaChavePixResponse.TipoConta.CONTA_CORRENTE
                         AccountType.CVGS -> ConsultaChavePixResponse.TipoConta.CONTA_POUPANCA
-                        else -> ConsultaChavePixResponse.TipoConta.UNKNOWN_CONTA
                     }
                 )
                 .build()

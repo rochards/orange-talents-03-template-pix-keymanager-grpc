@@ -9,7 +9,7 @@ class Instituicoes {
                 "00038166" -> "Banco Central do Brasil"
                 "00360305" -> "CAIXA ECONOMICA FEDERAL"
                 "17298092" -> "Banco Itaú BBA S.A"
-                "60701190" -> "ITAÚ UNIBANCO S.A. "
+                "60701190" -> "ITAÚ UNIBANCO S.A."
                 else -> "ainda não registrado"
             }
         }
