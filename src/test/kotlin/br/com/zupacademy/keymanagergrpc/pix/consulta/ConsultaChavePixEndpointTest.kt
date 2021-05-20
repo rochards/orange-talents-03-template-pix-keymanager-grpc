@@ -40,6 +40,7 @@ internal class ConsultaChavePixEndpointTest {
     private val clienteId = UUID.randomUUID().toString()
     private lateinit var chavePixExistente: ChavePix
 
+    // por padrão o método abaixo roda em uma transação isolada
     @BeforeEach
     fun setUp() {
         chavePixExistente = ChavePix(
@@ -48,13 +49,14 @@ internal class ConsultaChavePixEndpointTest {
         repository.save(chavePixExistente)
     }
 
+    // por padrão o método abaixo roda em uma transação isolada
     @AfterEach
     fun tearDown() {
         repository.deleteAll()
     }
 
     @Test
-    fun `deve retornar uma chave buscando pelo identificador da chave e do cliente`() {
+    fun `deve retornar uma Chave Pix buscando pelo identificador da chave e do cliente`() {
         val pixKeyDetailsResponse = buildPixKeyDetailsResponse().copy(createdAt = chavePixExistente.registradaNoBcbEm)
 
         Mockito.`when`(clienteBcb.buscaChavePix("parker.aranha@gmail.com"))
@@ -88,7 +90,7 @@ internal class ConsultaChavePixEndpointTest {
     }
 
     @Test
-    fun `deve retornar uma chave buscando apenas pela chave`() {
+    fun `deve retornar uma Chave Pix buscando apenas pela valor da chave`() {
         val pixKeyDetailsResponse = buildPixKeyDetailsResponse().copy(createdAt = chavePixExistente.registradaNoBcbEm)
 
         Mockito.`when`(clienteBcb.buscaChavePix("parker.aranha@gmail.com"))
@@ -117,7 +119,7 @@ internal class ConsultaChavePixEndpointTest {
     }
 
     @Test
-    fun `não deve retornar uma chave quando não encontrada registrada localmente`() {
+    fun `não deve retornar uma Chave Pix, buscando pelo identificador da chave e do cliente, quando essa não estiver registrada localmente`() {
         val exception = assertThrows<StatusRuntimeException> {
             grpcClient.consultaChavePix(
                 ConsultaChavePixRequest.newBuilder()
@@ -142,7 +144,7 @@ internal class ConsultaChavePixEndpointTest {
     }
 
     @Test
-    fun `não deve retornar uma chave quando não encontrada registrada no Banco Central`() {
+    fun `não deve retornar uma Chave Pix, buscando pelo valor da chave, quando essa não estiver registrada no Banco Central`() {
         Mockito.`when`(clienteBcb.buscaChavePix("parker.aranha@gmail.com"))
             .thenReturn(HttpResponse.notFound())
 
@@ -161,6 +163,19 @@ internal class ConsultaChavePixEndpointTest {
                 "chave 'parker.aranha@gmail.com' não encontrada no Banco Central",
                 this.status.description
             )
+        }
+    }
+
+    @Test
+    fun `não deve retornar uma Chave Pix quando o cliente não preencheu a requisição corretamente`() {
+        val exception = assertThrows<StatusRuntimeException> {
+            grpcClient.consultaChavePix(
+                ConsultaChavePixRequest.newBuilder().build()
+            )
+        }
+
+        with(exception) {
+            assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
         }
     }
 
