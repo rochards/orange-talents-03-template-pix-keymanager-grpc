@@ -16,6 +16,7 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -24,8 +25,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.*
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
@@ -278,6 +278,43 @@ internal class RegistraChavePixEndpointTest {
 
         with(exception) {
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
+        }
+    }
+
+    @Test
+    @DisplayName("não deve criar chave quando essa já estiver registrada no Banco Central")
+    fun registraChavePixTeste08() {
+        val contaResponse = buildContaResponse()
+        val createPixKeyRequest = buildCreatePixKeyRequest(contaResponse).copy(
+            key = contaResponse.titular.cpf, keyType = KeyType.CPF
+        )
+
+        `when`(clienteErpItau.consultaConta(clienteId, contaResponse.tipo))
+            .thenReturn(HttpResponse.ok(contaResponse))
+
+        `when`(clienteBcb.registraChavePix(createPixKeyRequest))
+//            .thenReturn(HttpResponse.unprocessableEntity())
+            .thenThrow(HttpClientResponseException(anyString(), HttpResponse.unprocessableEntity<Any>()))
+
+
+        val exception = assertThrows<StatusRuntimeException> {
+            grpcClient.registraChavePix(
+                RegistraChavePixRequest.newBuilder()
+                    .setErpClienteId(clienteId)
+                    .setChave(contaResponse.titular.cpf)
+                    .setTipoChave(RegistraChavePixRequest.TipoChave.CPF)
+                    .setTipoConta(RegistraChavePixRequest.TipoConta.CONTA_CORRENTE)
+                    .build()
+            )
+        }
+
+
+        with(exception) {
+            assertEquals(Status.ALREADY_EXISTS.code, this.status.code)
+            assertEquals(
+                "chave pix '${contaResponse.titular.cpf}' já cadastrada no Banco Central",
+                this.status.description
+            )
         }
     }
 
