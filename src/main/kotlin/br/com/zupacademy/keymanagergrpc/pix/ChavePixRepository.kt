@@ -9,4 +9,5 @@ interface ChavePixRepository : CrudRepository<ChavePix, Long> {
 
     fun existsByChave(chave: String): Boolean
     fun findByIdAndErpClienteId(id: Long, erpClienteId: String): ChavePix?
+    fun findByErpClienteId(erpClienteId: String): List<ChavePix>
 }
