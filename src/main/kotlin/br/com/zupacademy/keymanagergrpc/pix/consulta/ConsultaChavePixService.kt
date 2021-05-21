@@ -58,11 +58,9 @@ fun PixKeyDetailsResponse.toDTO(
         .setErpClienteId(erpClienteId)
         .setTipoChave(
             when (this.keyType) {
-                KeyType.RANDOM -> TipoChave.RANDOM
-                KeyType.CPF -> TipoChave.CPF
-                KeyType.EMAIL -> TipoChave.EMAIL
                 KeyType.PHONE -> TipoChave.TELEFONE_CELULAR
-                else -> TipoChave.UNKNOWN_CHAVE
+                KeyType.CNPJ -> TipoChave.UNKNOWN_CHAVE
+                else -> TipoChave.valueOf(this.keyType.name)
             }
         )
         .setChave(this.key)

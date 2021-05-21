@@ -44,21 +44,18 @@ data class NovaChavePix(
     fun toBcbKeyRequest(conta: ContaResponse): CreatePixKeyRequest {
 
         return CreatePixKeyRequest(
-            keyType = when (this.tipoChave) {
-                TipoChave.RANDOM -> KeyType.RANDOM
-                TipoChave.CPF -> KeyType.CPF
-                TipoChave.EMAIL -> KeyType.EMAIL
+            keyType = when (this.tipoChave!!) {
                 TipoChave.TELEFONE_CELULAR -> KeyType.PHONE
-                else -> KeyType.CNPJ
+                else -> KeyType.valueOf(this.tipoChave.name)
             },
             key = chave,
             bankAccount = BankAccount(
                 participant = conta.instituicao.ispb,
                 branch = conta.agencia,
                 accountNumber = conta.numero,
-                accountType = when (this.tipoConta) {
+                accountType = when (this.tipoConta!!) {
                     TipoConta.CONTA_CORRENTE -> AccountType.CACC
-                    else -> AccountType.CVGS
+                    TipoConta.CONTA_POUPANCA -> AccountType.CVGS
                 }
             ),
             owner = Owner(
