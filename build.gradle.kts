@@ -45,6 +45,7 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("com.h2database:h2")
     testImplementation("org.mockito:mockito-core")
+    testImplementation("org.hamcrest:hamcrest-core:2.2")
 }
 
 

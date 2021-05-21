@@ -13,8 +13,13 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsInAnyOrder
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
@@ -33,9 +38,6 @@ internal class ListaChavesPixEndpointTest {
 
     @BeforeEach
     internal fun setUp() {
-        val pixRandom = ChavePix(
-            erpClienteId, UUID.randomUUID().toString(), TipoChave.RANDOM, TipoConta.CONTA_CORRENTE, LocalDateTime.now()
-        )
         val pixEmail = ChavePix(
             erpClienteId, "parker.aranha@gmail.com", TipoChave.EMAIL, TipoConta.CONTA_CORRENTE, LocalDateTime.now()
         )
@@ -43,10 +45,10 @@ internal class ListaChavesPixEndpointTest {
             erpClienteId, "40764442058", TipoChave.CPF, TipoConta.CONTA_CORRENTE, LocalDateTime.now()
         )
         val pixTelefone = ChavePix(
-            erpClienteId, "+5534998877441", TipoChave.CPF, TipoConta.CONTA_CORRENTE, LocalDateTime.now()
+            erpClienteId, "+5534998877441", TipoChave.TELEFONE_CELULAR, TipoConta.CONTA_CORRENTE, LocalDateTime.now()
         )
 
-        repository.saveAll(listOf(pixRandom, pixEmail, pixCpf, pixTelefone))
+        repository.saveAll(listOf(pixEmail, pixCpf, pixTelefone))
     }
 
     @AfterEach
@@ -65,7 +67,15 @@ internal class ListaChavesPixEndpointTest {
 
         with(response) {
             assertEquals(erpClienteId, this.erpClienteId)
-            assertEquals(4, this.chavesCount)
+            assertEquals(3, this.chavesCount)
+            assertThat(
+                this.chavesList.map { Pair(it.tipoChave, it.chave) }.toList(),
+                containsInAnyOrder(
+                    Pair(br.com.zupacademy.keymanagergrpc.grpc.TipoChave.CPF, "40764442058"),
+                    Pair(br.com.zupacademy.keymanagergrpc.grpc.TipoChave.TELEFONE_CELULAR, "+5534998877441"),
+                    Pair(br.com.zupacademy.keymanagergrpc.grpc.TipoChave.EMAIL, "parker.aranha@gmail.com")
+                )
+            )
         }
     }
 
@@ -115,7 +125,6 @@ internal class ListaChavesPixEndpointTest {
 
         with(exception) {
             assertEquals(Status.INVALID_ARGUMENT.code, this.status.code)
-            assertEquals("lista.erpClienteId: não é um formato válido de UUID", this.status.description)
         }
     }
 
