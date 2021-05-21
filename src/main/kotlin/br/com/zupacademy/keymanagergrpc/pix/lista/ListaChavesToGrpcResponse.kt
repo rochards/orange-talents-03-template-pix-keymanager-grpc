@@ -15,7 +15,6 @@ class ListaChavesToGrpcResponse {
             return chavesPix.map { chavePix ->
                 ListaChavesPixResponse.ChavePixResponse.newBuilder()
                     .setPixId(chavePix.id!!)
-                    .setErpClienteId(chavePix.erpClienteId)
                     .setChave(chavePix.chave)
                     .setTipoChave(TipoChave.valueOf(chavePix.tipoChave.name))
                     .setTipoConta(TipoConta.valueOf(chavePix.tipoConta.name))

@@ -21,6 +21,7 @@ class ListaChavesPixEndpoint(private val service: ListaChavesPixService) :
 
         responseObserver.onNext(
             ListaChavesPixResponse.newBuilder()
+                .setErpClienteId(request.erpClienteId)
                 .addAllChaves(chaves)
                 .build()
         )

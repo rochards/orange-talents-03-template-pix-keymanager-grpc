@@ -91,15 +91,15 @@ message ListaChavesPixRequest {
   string erpClienteId = 1;
 }
 message ListaChavesPixResponse {
-  repeated ChavePixResponse chaves = 1;
+  string erpClienteId = 1;
+  repeated ChavePixResponse chaves = 2;
 
   message ChavePixResponse {
     int64 pixId = 1;
-    string erpClienteId = 2;
-    string chave = 3;
-    TipoChave tipoChave = 4;
-    TipoConta tipoConta = 5;
-    google.protobuf.Timestamp criadaEm = 6;
+    string chave = 2;
+    TipoChave tipoChave = 3;
+    TipoConta tipoConta = 4;
+    google.protobuf.Timestamp criadaEm = 5;
   }
 }
 service KeyManagerListaService {
