@@ -10,15 +10,16 @@ phases:
     commands:
       - IMAGE_REPO_NAME=key-manager-grpc-ot3-rodrigo
       - IMAGE_REPO_NAME_DB=key-manager-grpc-db-ot3-rodrigo
+      - AWS_REPO_ID="$aws_repo_id"
       - AWS_DEFAULT_REGION=sa-east-1
       - IMAGE_TAG=latest
       - echo Build started at `date`
       - echo Building the key-manager-grpc micronaut project...
       - gradle build
       - echo Building the Docker image for key-manager-grpc...
-      - docker build -t dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker build -t $AWS_REPO_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG .
       - echo Building the Docker image for key-manager-grpc-db...
-      - docker build -t dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_DB:$IMAGE_TAG database
+      - docker build -t $AWS_REPO_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_DB:$IMAGE_TAG database
 
   post_build:
     commands:
@@ -26,5 +27,5 @@ phases:
       - echo Pushing the Docker images...
       - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
-      - docker push dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-      - docker push dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_DB:$IMAGE_TAG
+      - docker push $AWS_REPO_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker push $AWS_REPO_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME_DB:$IMAGE_TAG
